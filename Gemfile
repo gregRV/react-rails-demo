@@ -40,6 +40,8 @@ gem 'active_model_serializers'
 gem 'ffaker'
 # needed this to use the 'responds_to' helper in the controller
 gem 'responders'
+# installs required JS files for React
+gem 'react-rails'
 ##
 
 group :development, :test do

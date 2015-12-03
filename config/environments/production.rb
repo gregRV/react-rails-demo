@@ -76,4 +76,7 @@ Rails.application.configure do
 
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
+
+  # provides minified version (strips comments/helpful warnings)
+  config.react.variant = :production
 end
