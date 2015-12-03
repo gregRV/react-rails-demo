@@ -38,6 +38,8 @@ gem 'sdoc', '~> 0.4.0', group: :doc
 gem 'active_model_serializers'
 # creates sample data for app
 gem 'ffaker'
+# needed this to use the 'responds_to' helper in the controller
+gem 'responders'
 ##
 
 group :development, :test do
