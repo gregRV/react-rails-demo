@@ -10,7 +10,7 @@ class CommentsController < ApplicationController
   end
 
   def create
-    respond_with Comment.create(create_params)
+    respond_with Comment.create(comment_params)
   end
 
   private

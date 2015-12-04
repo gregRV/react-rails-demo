@@ -25,6 +25,36 @@ var CommentList = React.createClass({
   }
 });
 
+var CommentForm = React.createClass({
+  // NOTE: .getDOMNode() is deprecated- now use ReactDOM.findDOMNode()
+  // BUT this method is NOT avail on ES6 components that extend React.Component
+  // https://facebook.github.io/react/docs/component-api.html
+  handleSubmit: function(){
+    var author = this.refs.author.getDOMNode().value.trim();
+    var comment = this.refs.comment.getDOMNode().value.trim();
+    this.props.onSubmit({
+      author: author,
+      comment: comment
+    });
+
+    this.refs.author.getDOMNode().value('');
+    this.refs.comment.getDOMNode().value('');
+    // "always return false from event handlers to prevent
+    // browsers default action of submitting the form"
+    return false;
+  },
+
+  render: function(){
+    return (
+      <form className='commentForm' onSubmit={this.handleSubmit}>
+        <input type='text' placeholder='Your name' ref='author' />
+        <input type='text' placeholder='Say something...' ref='comment' />
+        <input type='submit' value='Post' />
+      </form>
+    );
+  }
+});
+
 var CommentBox = React.createClass({
   getInitialState: function(){
     return { comments: [] };
@@ -47,9 +77,30 @@ var CommentBox = React.createClass({
     });
   },
 
+  handleCommentSubmit: function(comment){
+    var comments = this.state.comments;
+    var newComments = comments.concat([comment]);
+    this.setState({ comments: newComments });
+
+    $.ajax({
+      url: this.props.url,
+      dataType: 'json',
+      type: 'POST',
+      data: {"comment": comment},
+      success: function(data){
+        this.loadCommentsFromServer();
+      }.bind(this),
+      error: function(xhr, status, err){
+        console.error(this.props.url, status, err.toString());
+      }.bind(this)
+    });
+  },
+
   render: function(){
     return (
       <div className='commentBox'>
+        <h1>New Comment</h1>
+        <CommentForm onSubmit={this.handleCommentSubmit} />
         <h1>Comments</h1>
         <CommentList comments={this.state.comments} />
       </div>
@@ -57,13 +108,7 @@ var CommentBox = React.createClass({
   }
 });
 
-
 var ready = function(){
-  // var fakeComments = [
-  //   { author: 'Richard', comment: 'This is a comment' },
-  //   { author: 'Nils', comment: 'This is another comment' }
-  // ];
-
   ReactDOM.render(
     <CommentBox url={"/comments.json"} />, document.getElementById('comments')
   );
