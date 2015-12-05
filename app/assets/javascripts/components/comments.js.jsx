@@ -108,10 +108,10 @@ var CommentBox = React.createClass({
   }
 });
 
-var ready = function(){
-  ReactDOM.render(
-    <CommentBox url={"/comments.json"} />, document.getElementById('comments')
-  );
-};
-
-$(document).ready(ready);
+// FOR USE IF WE DID NOT USE react_component HELPER
+// var ready = function(){
+//   ReactDOM.render(
+//     <CommentBox url={"/comments.json"} />, document.getElementById('comments')
+//   );
+// };
+// $(document).ready(ready);
