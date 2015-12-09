@@ -1,5 +1,5 @@
-var Comment= React.createClass({
-  render: function(){
+class Comment extends React.Component {
+  render() {
     return (
       <div className='comment'>
         <h2 className='commentAuthor'>
@@ -9,11 +9,11 @@ var Comment= React.createClass({
       </div>
     );
   }
-});
+}
 
-var CommentList = React.createClass({
-  render: function(){
-    var commentNodes = this.props.comments.map(function(comment, index){
+class CommentList extends React.Component {
+  render() {
+    var commentNodes = this.props.comments.map((comment, index) => {
       return <Comment author={comment.author} comment={comment.comment} key={index} />
     });
 
@@ -23,13 +23,13 @@ var CommentList = React.createClass({
       </div>
     );
   }
-});
+}
 
-var CommentForm = React.createClass({
+class CommentForm extends React.Component {
   // NOTE: .getDOMNode() is deprecated- now use ReactDOM.findDOMNode()
   // BUT this method is NOT avail on ES6 components that extend React.Component
   // https://facebook.github.io/react/docs/component-api.html
-  handleSubmit: function(){
+  handleSubmit() {
     var author = this.refs.author.getDOMNode().value.trim();
     var comment = this.refs.comment.getDOMNode().value.trim();
     this.props.onSubmit({
@@ -42,9 +42,9 @@ var CommentForm = React.createClass({
     // "always return false from event handlers to prevent
     // browsers default action of submitting the form"
     return false;
-  },
+  }
 
-  render: function(){
+  render() {
     return (
       <form className='commentForm' onSubmit={this.handleSubmit}>
         <input type='text' placeholder='Your name' ref='author' />
@@ -53,31 +53,35 @@ var CommentForm = React.createClass({
       </form>
     );
   }
-});
+}
 
-var CommentBox = React.createClass({
-  getInitialState: function(){
-    return { comments: [] };
-  },
+class CommentBox extends React.Component {
+  constructor(props) {
+    // when using 'constructor' vs 'getInitialState':
+    // always make call to super and pass in props
+    super(props);
+    // and ASSIGN this.state, rather than returning the object literal
+    this.state = { comments: [] };
+  }
 
-  componentDidMount: function(){
+  componentDidMount() {
     this.loadCommentsFromServer();
-  },
+  }
 
-  loadCommentsFromServer: function(){
+  loadCommentsFromServer() {
     $.ajax({
       url: this.props.url,
       dataType: 'json',
-      success: function(comments){
+      success: (comments) => {
         this.setState({ comments: comments });
-      }.bind(this),
-      error: function(xhr, status, err){
+      },
+      error: (xhr, status, err) => {
         console.error(this.props.url, status, err.toString());
-      }.bind(this)
+      }
     });
-  },
+  }
 
-  handleCommentSubmit: function(comment){
+  handleCommentSubmit(comment) {
     var comments = this.state.comments;
     var newComments = comments.concat([comment]);
     this.setState({ comments: newComments });
@@ -87,16 +91,16 @@ var CommentBox = React.createClass({
       dataType: 'json',
       type: 'POST',
       data: {"comment": comment},
-      success: function(data){
+      success: (data) => {
         this.loadCommentsFromServer();
-      }.bind(this),
-      error: function(xhr, status, err){
+      },
+      error: (xhr, status, err) => {
         console.error(this.props.url, status, err.toString());
-      }.bind(this)
+      }
     });
-  },
+  }
 
-  render: function(){
+  render() {
     return (
       <div className='commentBox'>
         <h1>New Comment</h1>
@@ -106,7 +110,7 @@ var CommentBox = React.createClass({
       </div>
     );
   }
-});
+}
 
 // FOR USE IF WE DID NOT USE react_component HELPER
 // var ready = function(){
